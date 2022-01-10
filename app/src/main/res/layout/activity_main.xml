@@ -61,12 +61,7 @@
         android:hint="Address"
         android:id="@+id/address"
         />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="DOB"
-        android:id="@+id/dob"
-        />
+
 
     <Button
         android:layout_width="wrap_content"
