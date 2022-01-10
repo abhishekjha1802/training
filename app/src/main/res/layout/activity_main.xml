@@ -62,7 +62,11 @@
         android:id="@+id/address"
         />
 
-
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="DateOfBirth"
+        />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
