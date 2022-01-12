@@ -6,20 +6,48 @@ import android.os.Bundle
 import android.text.Editable
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import com.example.myfirstapp.fragments.AddFragment
+import com.example.myfirstapp.fragments.HomeFragment
+import com.example.myfirstapp.fragments.UserlistFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-    lateinit var name:String
+
+
+    private val homeFragment=HomeFragment()
+    private val userlistFragment=UserlistFragment()
+    private val addFragment=AddFragment()
+    
+
+
+
+
+    /*lateinit var name:String
     lateinit var mobile_no:String
     lateinit var address:String
     lateinit var gender:String
-    lateinit var dob :String
+    lateinit var dob :String*/
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
+        
+        replaceFragment(homeFragment)
 
-        loadState()
+        findViewById<BottomNavigationView>(R.id.bottom_navigation).setOnItemSelectedListener {
+            if(it.itemId==R.id.homeButton)
+                replaceFragment(homeFragment)
+            else if(it.itemId==R.id.userlistButton)
+                replaceFragment(userlistFragment)
+            else
+                replaceFragment(addFragment)
+            true
+        }
+
+        /*loadState()
 
 
         var submit = findViewById<Button>(R.id.submit)
@@ -55,10 +83,19 @@ class MainActivity : AppCompatActivity() {
         reset.setOnClickListener {
 
             reset()
+        }*/
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        if(fragment!=null)
+        {
+            val transaction=supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container,fragment)
+            transaction.commit()
         }
     }
 
-    private fun reset() {
+    /*private fun reset() {
         findViewById<EditText>(R.id.name).text.clear()
         findViewById<EditText>(R.id.mobile_no).text.clear()
         findViewById<EditText>(R.id.address).text.clear()
@@ -107,6 +144,6 @@ class MainActivity : AppCompatActivity() {
 
         editable.apply()
     }
-
+    */
 
 }

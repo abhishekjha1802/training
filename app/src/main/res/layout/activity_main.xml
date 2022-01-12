@@ -1,104 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-
     tools:context=".MainActivity">
 
-    <EditText
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Name"
-        android:id="@+id/name"
+        android:layout_height="match_parent"
         />
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        >
+        android:layout_height="wrap_content"
+        app:menu="@menu/menu"
+        android:layout_alignParentBottom="true"/>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Gender"
-            android:textSize="20dp"/>
-        <RadioGroup
-            android:id="@+id/gender"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="2"
-            android:orientation="horizontal"
-            >
-            <RadioButton
-                android:id="@+id/male"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="male"/>
-            <RadioButton
-                android:id="@+id/female"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="female"/>
-        </RadioGroup>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Mobile No"
-        android:id="@+id/mobile_no"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Address"
-        android:id="@+id/address"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="DateOfBirth"
-        android:id="@+id/dob"
-        />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            >
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Submit"
-                android:id="@+id/submit"
-                android:layout_margin="5dp"
-                />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Reset"
-                android:id="@+id/reset"
-                android:layout_margin="5dp"
-                />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <com.google.android.material.chip.ChipGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-    </com.google.android.material.chip.ChipGroup>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</RelativeLayout>
