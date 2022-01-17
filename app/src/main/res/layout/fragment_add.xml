@@ -68,6 +68,32 @@
             android:hint="DateOfBirth"
             android:id="@+id/dob"
             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pick Image"
+            android:id="@+id/pickImage"
+            android:layout_margin="5dp"
+            />
+
+        <TextView
+            android:id="@+id/imagePathUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fetch Location"
+            android:id="@+id/fetchLocation"
+            android:layout_margin="5dp"
+            />
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

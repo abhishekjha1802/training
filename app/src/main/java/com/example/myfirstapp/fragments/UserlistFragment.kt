@@ -1,16 +1,20 @@
 package com.example.myfirstapp.fragments
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import com.example.myfirstapp.DbHelper
+import com.example.myfirstapp.EditActivity
 import com.example.myfirstapp.R
+import com.example.myfirstapp.User
 
 class UserlistFragment : Fragment() {
 
@@ -28,28 +32,43 @@ class UserlistFragment : Fragment() {
         var cursor=db?.query("Users",null,null,null,null,null,null)
         var count: Int? =cursor?.count
 
-        var nameArray=ArrayList<String>()
-        var genderArray=ArrayList<String>()
-        var addressArray=ArrayList<String>()
-        var mobile_noArray=ArrayList<String>()
-        var dobArray=ArrayList<String>()
+        var userArray=ArrayList<User>()
 
-        if(cursor!=null)
-        {
-            cursor.moveToFirst()
-        }
 
-        do{
-            cursor?.let { nameArray.add(it?.getString(1)) }
-        }
+
+
         while (cursor?.moveToNext() == true)
+        {
+            var user=User(1,cursor.getString(1),"","","","",cursor.getString(6),"","")
+            userArray.add(user)
+        }
 
-        var listview=v.findViewById<ListView>(R.id.list_view)
-        listview.adapter=MyAdapter(requireActivity(),nameArray)
 
+        var listview:ListView=v.findViewById<ListView>(R.id.list_view)
+        listview.adapter=MyAdapter(requireActivity(),userArray)
+
+
+        listview.onItemClickListener= object :AdapterView.OnItemClickListener{
+            override fun onItemClick(
+                p0: AdapterView<*>?,
+                p1: View?,
+                p2: Int,
+                p3: Long
+            ) {
+                var intent=Intent(requireContext(),EditActivity::class.java).apply{
+                    putExtra("ID",p2)
+                }
+                startActivity(intent)
+
+            }
+        }
 
         return v
     }
 
 
 }
+
+
+
+
