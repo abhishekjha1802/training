@@ -4,6 +4,7 @@ package com.example.myfirstapp.fragments
 import android.annotation.SuppressLint
 import android.app.Activity.LOCATION_SERVICE
 import android.app.Activity.RESULT_OK
+import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
@@ -21,6 +22,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import com.example.myfirstapp.DbHelper
+import com.example.myfirstapp.MainActivity
 import com.example.myfirstapp.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -28,7 +30,9 @@ import com.google.android.gms.location.LocationRequest.create
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import java.io.File
-
+import java.text.SimpleDateFormat
+import java.time.Year
+import java.util.*
 
 
 class AddFragment : Fragment() {
@@ -39,6 +43,7 @@ class AddFragment : Fragment() {
     lateinit var gender:String
     lateinit var dob :String
     lateinit var vw: View
+    lateinit var myCalendar:Calendar
     var imagePath:String=""
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     lateinit var locationRequest: com.google.android.gms.location.LocationRequest
@@ -56,6 +61,19 @@ class AddFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         vw = inflater.inflate(R.layout.fragment_add, container, false)
         loadState(vw)
+
+
+        //Setting Date Picker
+        myCalendar=Calendar.getInstance()
+        val datPicker=DatePickerDialog.OnDateSetListener{ datePicker: DatePicker, year: Int, month: Int, date_of_month: Int ->
+            myCalendar.set(Calendar.YEAR,year)
+            myCalendar.set(Calendar.MONTH,month)
+            myCalendar.set(Calendar.DAY_OF_MONTH,date_of_month)
+            updateLabel(myCalendar)
+        }
+        vw.findViewById<TextView>(R.id.dob).setOnClickListener{
+            DatePickerDialog(requireContext(),datPicker,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
 
         //Pick Image Button----------------------------------------->
 
@@ -115,8 +133,23 @@ class AddFragment : Fragment() {
                 "Data Saved Successfully",
                 Toast.LENGTH_LONG
             ).show()
+
+            var intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        vw.findViewById<Button>(R.id.reset).setOnClickListener{
+            reset(vw)
         }
         return vw
+    }
+
+    private fun updateLabel(calendar: Calendar)
+    {
+        val myFormat="dd-MM-yyy"
+        val sdf=SimpleDateFormat(myFormat,Locale.UK)
+        vw.findViewById<EditText>(R.id.dob).setText(sdf.format(myCalendar.time))
     }
 
     //Submit Button Functions-------------------------------------------------------->
@@ -189,7 +222,6 @@ class AddFragment : Fragment() {
             var uri= data?.getData()
             var file = File(uri?.getPath());//create path from uri
             imagePath= file.getPath().split(":")[1]
-            vw.findViewById<TextView>(R.id.imagePathUrl).setText(imagePath)
         }
     }
 
@@ -244,7 +276,7 @@ class AddFragment : Fragment() {
                         println("Assigning Loaction")
                         longitude=location.longitude.toString()
                         latitude=location.latitude.toString()
-                        vw.findViewById<TextView>(R.id.locationText).setText("longitude: ${longitude} \n latitude: ${latitude}")
+                        vw.findViewById<EditText>(R.id.location).setText("Longitude:  $longitude\nLatitude:  $latitude")
 
                     }
                 }
@@ -278,7 +310,7 @@ class AddFragment : Fragment() {
             var lastlocation: Location =p0.lastLocation
             longitude=lastlocation.longitude.toString()
             latitude=lastlocation.latitude.toString()
-            vw.findViewById<TextView>(R.id.locationText).setText("longitude: ${longitude} \n latitude: ${latitude}")
+            vw.findViewById<EditText>(R.id.location).setText("Longitude:  $longitude\nLatitude: $latitude")
         }
     }
 }

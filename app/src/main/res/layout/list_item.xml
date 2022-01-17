@@ -8,19 +8,25 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
+        android:layout_centerVertical="true"
         >
         <ImageView
             android:id="@+id/userImage"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="40dp"/>
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
+            />
         <TextView
             android:id="@+id/name_list"
             android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:layout_height="40dp"
+            android:textAlignment="gravity"
+            android:gravity="center_vertical"
             android:text="List Item"
-            android:textSize="25dp" />
+            android:textSize="25dp"
+            android:layout_margin="4dp"/>
     </LinearLayout>
 
 </RelativeLayout>
