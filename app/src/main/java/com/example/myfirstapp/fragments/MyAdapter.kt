@@ -3,6 +3,7 @@ package com.example.myfirstapp.fragments
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +24,10 @@ class MyAdapter(private val context: Activity,private val arraylist:ArrayList<Us
 
         view.findViewById<TextView>(R.id.name_list).text=arraylist[position].name
         println(arraylist[position].imagePath)
-        var imgFile = File("arraylist[position].imageUri")
 
+
+        view.findViewById<ImageView>(R.id.userImage).setImageResource(R.drawable.ic_user)
+        var imgFile = File("arraylist[position].imageUri")
         if(imgFile.exists()){
             println("test")
 

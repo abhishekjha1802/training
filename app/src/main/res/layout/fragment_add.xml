@@ -3,124 +3,157 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.AddFragment">
-
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <EditText
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Name"
-            android:id="@+id/name"
-            />
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            >
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                android:hint="Name"
+                android:id="@+id/name"
+                />
+            <LinearLayout
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                >
 
-            <TextView
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Gender"
+                    android:textSize="20dp"/>
+                <RadioGroup
+                    android:id="@+id/gender"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal"
+                    >
+                    <RadioButton
+                        android:id="@+id/male"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="male"/>
+                    <RadioButton
+                        android:id="@+id/female"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="female"/>
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Mobile No"
+                android:inputType="number"
+                android:id="@+id/mobile_no"
+                />
+            <EditText
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="textPostalAddress"
+                android:hint="Address"
+                android:id="@+id/address"
+                />
+
+            <EditText
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Date Of Birth"
+                android:focusable="false"
+                android:clickable="true"
+                android:id="@+id/dob"
+                />
+            <EditText
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Location"
+                android:focusable="false"
+                android:clickable="false"
+                android:id="@+id/location"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fetch Location"
+                android:id="@+id/fetchLocation"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/purple_500"
+                android:backgroundTint="@color/white"
+                app:cornerRadius="16dp"
+                app:rippleColor="#33AAAAAA"
+                app:strokeColor="@color/purple_500"
+                app:strokeWidth="2dp"
+                />
+            <Button
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pick Image"
+                android:id="@+id/pickImage"
+                android:textColor="@color/purple_500"
+                android:backgroundTint="@color/white"
+                app:cornerRadius="16dp"
+                app:rippleColor="#33AAAAAA"
+                app:strokeColor="@color/purple_500"
+                app:strokeWidth="2dp"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="16dp"
+            >
+            <Button
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Reset"
+                android:id="@+id/reset"
+                />
+            <Button
+                android:layout_margin="8dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Gender"
-                android:textSize="20dp"/>
-            <RadioGroup
-                android:id="@+id/gender"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                >
-                <RadioButton
-                    android:id="@+id/male"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="male"/>
-                <RadioButton
-                    android:id="@+id/female"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="female"/>
-            </RadioGroup>
+                android:text="Submit"
+                android:id="@+id/submit"
+                />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </LinearLayout>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Mobile No"
-            android:id="@+id/mobile_no"
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Address"
-            android:id="@+id/address"
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="DateOfBirth"
-            android:id="@+id/dob"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pick Image"
-            android:id="@+id/pickImage"
-            android:layout_margin="5dp"
-            />
 
-        <TextView
-            android:id="@+id/imagePathUrl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fetch Location"
-            android:id="@+id/fetchLocation"
-            android:layout_margin="5dp"
-            />
-        <TextView
-            android:id="@+id/locationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            >
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                >
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Submit"
-                    android:id="@+id/submit"
-                    android:layout_margin="5dp"
-                    />
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reset"
-                    android:id="@+id/reset"
-                    android:layout_margin="5dp"
-                    />
-            </LinearLayout>
-        </RelativeLayout>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

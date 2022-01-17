@@ -2,10 +2,13 @@ package com.example.myfirstapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.FrameLayout
 import androidx.appcompat.widget.*
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -28,8 +31,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        
 
+        var fragmentId=intent.getIntExtra("fragment",1)
 
         toolbar=findViewById(R.id.myToolbar)
         setSupportActionBar(toolbar)
@@ -45,8 +48,6 @@ class MainActivity : AppCompatActivity() {
 
         navigationView.setupWithNavController(navController)
         bottomNavigationView.setupWithNavController(navController)
-
-
 
     }
 
