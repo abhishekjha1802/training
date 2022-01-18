@@ -6,16 +6,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.text.Editable
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.google.android.gms.location.*
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class EditActivity : AppCompatActivity() {
@@ -30,11 +34,12 @@ class EditActivity : AppCompatActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        var id=intent.getIntExtra("ID",0)+1
+        var id=intent.getIntExtra("ID",0)
         println(id)
 
         var dbHelper = this?.let { it1 -> DbHelper(it1.applicationContext) }
@@ -111,7 +116,11 @@ class EditActivity : AppCompatActivity() {
                 gender="female"
             var mobile_no=findViewById<EditText>(R.id.editMobileNo).text
             var dob=findViewById<EditText>(R.id.editDob).text
-            db?.execSQL("Update Users Set name='${name}',gender='$gender',address='$address',mobile_no='$mobile_no',dob='$dob',imagePath='$imagePath',longitude='$longitude',latitude='$latitude' where id='$id'")
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+            val formatted = current.format(formatter)
+
+            db?.execSQL("Update Users Set name='${name}',gender='$gender',address='$address',mobile_no='$mobile_no',dob='$dob',imagePath='$imagePath',longitude='$longitude',latitude='$latitude',modificationTime='$formatted' where id='$id'")
             Toast.makeText(this,"Data Updated Successfully",Toast.LENGTH_SHORT).show()
             var intent=Intent(this,MainActivity::class.java).apply {
                 intent.putExtra("fragment",2)

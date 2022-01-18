@@ -7,7 +7,7 @@ import java.security.AccessControlContext
 
 class DbHelper(context: Context): SQLiteOpenHelper(context,"UserDb",null,1) {
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL("Create Table Users(id Integer PRIMARY KEY AUTOINCREMENT,name Text,gender Text,address Text,mobile_no Text,dob Text,imagePath Text,longitude Text,latitude Text)")
+        db?.execSQL("Create Table Users(id Integer PRIMARY KEY AUTOINCREMENT,name Text,gender Text,address Text,mobile_no Text,dob Text,imagePath Text,longitude Text,latitude Text,insertionTime Text,modificationTime Text)")
 
     }
 
