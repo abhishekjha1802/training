@@ -13,6 +13,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.location.LocationRequest
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.example.myfirstapp.DbHelper
 import com.example.myfirstapp.MainActivity
@@ -31,7 +33,9 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.time.Year
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -53,6 +57,7 @@ class AddFragment : Fragment() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -111,6 +116,9 @@ class AddFragment : Fragment() {
             else
                 gender = "female"
             dob = vw.findViewById<EditText>(R.id.dob).text.toString()
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+            val formatted = current.format(formatter)
 
             var cv = ContentValues()
             cv.put("name", name)
@@ -121,7 +129,10 @@ class AddFragment : Fragment() {
             cv.put("imagePath",imagePath)
             cv.put("longitude",longitude)
             cv.put("latitude",latitude)
+            cv.put("insertionTime",formatted)
+            cv.put("modificationTime",formatted)
             db?.insert("Users", null, cv)
+
 
 
             reset(vw)
@@ -139,9 +150,9 @@ class AddFragment : Fragment() {
         }
 
 
-        vw.findViewById<Button>(R.id.reset).setOnClickListener{
-            reset(vw)
-        }
+
+
+
         return vw
     }
 

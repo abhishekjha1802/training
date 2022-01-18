@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "657899200883",
+    "project_id": "fir-signin-7ba8a",
+    "storage_bucket": "fir-signin-7ba8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657899200883:android:1d1ab6b061b55eb12fe506",
+        "android_client_info": {
+          "package_name": "com.example.myfirstapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657899200883-pktsqohml7eon6spiu5faq3kemk0jmij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myfirstapp",
+            "certificate_hash": "cf6d107e920b78307a2f60549dac7417ecae09a8"
+          }
+        },
+        {
+          "client_id": "657899200883-fhi7sidl8amrcv5mtrgvoeqiqcadj57e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfm7nZMgRw3cQrCBwlSjW61l4A2GyiUfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657899200883-fhi7sidl8amrcv5mtrgvoeqiqcadj57e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

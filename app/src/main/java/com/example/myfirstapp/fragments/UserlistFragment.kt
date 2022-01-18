@@ -29,7 +29,7 @@ class UserlistFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         var dbHelper = context?.let { it1 -> DbHelper(it1.applicationContext) }
         var db = dbHelper?.readableDatabase
-        var cursor=db?.query("Users",null,null,null,null,null,null)
+        var cursor=db?.query("Users",null,null,null,null,null,"modificationTime DESC")
         var count: Int? =cursor?.count
 
         var userArray=ArrayList<User>()
@@ -39,7 +39,7 @@ class UserlistFragment : Fragment() {
 
         while (cursor?.moveToNext() == true)
         {
-            var user=User(1,cursor.getString(1),"","","","",cursor.getString(6),"","")
+            var user=User(cursor.getInt(0),cursor.getString(1),"","","","",cursor.getString(6),"","")
             userArray.add(user)
         }
 
@@ -55,8 +55,9 @@ class UserlistFragment : Fragment() {
                 p2: Int,
                 p3: Long
             ) {
+                println(userArray[p2].name)
                 var intent=Intent(requireContext(),EditActivity::class.java).apply{
-                    putExtra("ID",p2)
+                    putExtra("ID",userArray[p2].id)
                 }
                 startActivity(intent)
 
