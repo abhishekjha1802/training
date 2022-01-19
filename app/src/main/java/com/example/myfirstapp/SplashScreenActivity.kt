@@ -20,7 +20,7 @@ class SplashScreenActivity : AppCompatActivity() {
         var logo=findViewById<ImageView>(R.id.toothsi_logo)
         logo.alpha = 0f
         logo.animate().setDuration(5000).alpha(1f).withEndAction{
-            val i= Intent(this,MainActivity::class.java)
+            val i= Intent(this,SignIn::class.java)
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out)
             finish()

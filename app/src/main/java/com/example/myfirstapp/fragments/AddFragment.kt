@@ -10,12 +10,15 @@ import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.location.Location
 import android.location.LocationManager
 import android.location.LocationRequest
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +57,7 @@ class AddFragment : Fragment() {
     var latitude:String=""
     var longitude:String=""
     val PERMISSION_ID=1001
-
+    val REQUEST_SINGLE_FILE=100
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -84,10 +87,10 @@ class AddFragment : Fragment() {
 
         var pickImage=vw.findViewById<Button>(R.id.pickImage)
         pickImage.setOnClickListener{
-            var intent=Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.setType("image/*")
-            intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-            startActivityForResult(intent,1)
+            var intent = Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"),REQUEST_SINGLE_FILE);
 
         }
 
@@ -228,12 +231,35 @@ class AddFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode==1 && resultCode==RESULT_OK)
+        if(resultCode==RESULT_OK)
         {
-            var uri= data?.getData()
-            var file = File(uri?.getPath());//create path from uri
-            imagePath= file.getPath().split(":")[1]
+            if(requestCode==REQUEST_SINGLE_FILE)
+            {
+                var selectedImageUri = data?.getData();
+                val path=getPathFromURI(selectedImageUri)
+
+
+                if(path!=null){
+                    var file=File(path)
+                    selectedImageUri= Uri.fromFile(file)
+                }
+                println(selectedImageUri)
+                println(path)
+            }
         }
+    }
+    fun getPathFromURI(contentUri:Uri?): String? {
+        var res: String?= null
+        var proj = arrayOf( MediaStore.Images.Media.DATA)
+        var cursor = requireActivity().applicationContext.getContentResolver()?.query(contentUri!!, proj, null, null, null)
+
+        if (cursor?.moveToFirst() == true) {
+
+            var column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor?.getString(column_index)
+        }
+        cursor?.close();
+        return res;
     }
 
     //Functions for Location------------------------------------------------>
