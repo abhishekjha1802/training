@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -26,4 +27,21 @@
             android:textSize="80dp"
             android:text="0"/>
     </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:id="@+id/logout"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/purple_500"
+        android:backgroundTint="@color/white"
+        app:cornerRadius="16dp"
+        app:rippleColor="#33AAAAAA"
+        app:strokeColor="@color/purple_500"
+        app:strokeWidth="2dp"
+        android:layout_gravity="bottom"
+        />
 </FrameLayout>
