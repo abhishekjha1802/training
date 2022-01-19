@@ -3,6 +3,7 @@ package com.example.myfirstapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Toast
 import com.example.myfirstapp.databinding.ActivitySignInBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -15,12 +16,12 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.oAuthProvider
 import java.sql.DriverManager.println
 
-class SignIn : AppCompatActivity() {
+open class SignIn : AppCompatActivity() {
 
     private lateinit var binding:ActivitySignInBinding
-
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var firebaseAuth:FirebaseAuth
+    private lateinit var fbButton:ImageView
 
     private companion object{
         private const val RC_SIGN_IN=100
@@ -48,6 +49,12 @@ class SignIn : AppCompatActivity() {
             val intent=googleSignInClient.signInIntent
             startActivityForResult(intent, RC_SIGN_IN)
 
+        }
+
+
+        fbButton=findViewById(R.id.fbSignIn)
+        fbButton.setOnClickListener {
+            startActivity(Intent(this,FacebookAuth::class.java).setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION))
         }
     }
 
