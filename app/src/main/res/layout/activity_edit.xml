@@ -6,135 +6,141 @@
     android:layout_height="match_parent"
     tools:context=".EditActivity"
     android:orientation="vertical">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:padding="16dp"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <EditText
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/buttonContainer">
+            <ScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_margin="8dp"
-                android:hint="Name"
-                android:id="@+id/editName"
-                />
-            <LinearLayout
-                android:layout_margin="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Gender"
-                    android:textSize="20dp"/>
-                <RadioGroup
-                    android:id="@+id/editGender"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="2"
-                    android:orientation="horizontal"
-                    >
-                    <RadioButton
-                        android:id="@+id/editMale"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:padding="16dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Male"/>
-                    <RadioButton
-                        android:id="@+id/editFemale"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Female"/>
-                </RadioGroup>
+                        android:orientation="vertical">
+                        <ImageView
+                            android:id="@+id/editPickImage"
+                            android:layout_width="300dp"
+                            android:layout_height="300dp"
+                            android:layout_gravity="center_horizontal"
+                            android:src="@drawable/default_image"/>
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_margin="8dp"
+                            android:hint="Name"
+                            android:id="@+id/editName"
+                            />
+                        <LinearLayout
+                            android:layout_margin="8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            >
 
-            </LinearLayout>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Gender"
+                                android:textSize="20dp"/>
+                            <RadioGroup
+                                android:id="@+id/editGender"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_weight="2"
+                                android:orientation="horizontal"
+                                >
+                                <RadioButton
+                                    android:id="@+id/editMale"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:text="Male"/>
+                                <RadioButton
+                                    android:id="@+id/editFemale"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:text="Female"/>
+                            </RadioGroup>
 
-            <EditText
-                android:layout_margin="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Mobile No"
-                android:inputType="number"
-                android:id="@+id/editMobileNo"
-                />
-            <EditText
-                android:layout_margin="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:inputType="textPostalAddress"
-                android:hint="Address"
-                android:id="@+id/editAddress"
-                />
+                        </LinearLayout>
 
-            <EditText
-                android:layout_margin="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Date Of Birth"
-                android:focusable="false"
-                android:clickable="true"
-                android:id="@+id/editDob"
-                />
-            <EditText
-                android:layout_margin="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Location"
-                android:focusable="false"
-                android:clickable="false"
-                android:id="@+id/editLocation"/>
+                        <EditText
+                            android:layout_margin="8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:hint="Mobile No"
+                            android:inputType="number"
+                            android:id="@+id/editMobileNo"
+                            />
+                        <EditText
+                            android:layout_margin="8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:inputType="textPostalAddress"
+                            android:hint="Address"
+                            android:id="@+id/editAddress"
+                            />
+
+                        <EditText
+                            android:layout_margin="8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:hint="Date Of Birth"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:id="@+id/editDob"
+                            />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="8dp">
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:hint="Location"
+                                android:focusable="false"
+                                android:clickable="false"
+                                android:id="@+id/editLocation"/>
+                            <ImageView
+                                android:id="@+id/editFetchLocation"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/location_logo"/>
+                        </LinearLayout>
 
 
+                    </LinearLayout>
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Fetch Location"
-                android:id="@+id/editFetchLocation"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:textColor="@color/purple_500"
-                android:backgroundTint="@color/white"
-                app:cornerRadius="16dp"
-                app:rippleColor="#33AAAAAA"
-                app:strokeColor="@color/purple_500"
-                app:strokeWidth="2dp"
-                />
-            <Button
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Pick Image"
-                android:id="@+id/editPickImage"
-                android:textColor="@color/purple_500"
-                android:backgroundTint="@color/white"
-                app:cornerRadius="16dp"
-                app:rippleColor="#33AAAAAA"
-                app:strokeColor="@color/purple_500"
-                app:strokeWidth="2dp"
-                />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
+
         </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/buttonContainer"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="1"
             android:layout_centerInParent="true"
             android:padding="16dp"
             >
@@ -151,12 +157,11 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Update"
+                android:text="update"
                 android:id="@+id/update"
                 />
 
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
