@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,8 +16,14 @@ import android.text.Editable
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import com.google.android.gms.location.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -28,9 +36,18 @@ class EditActivity : AppCompatActivity() {
     lateinit var locationRequest: com.google.android.gms.location.LocationRequest
     var latitude:String=""
     var longitude:String=""
+    lateinit var imageUri:String
     val PERMISSION_ID=1001
-    lateinit var imagePath:String
+    val REQUEST_SINGLE_FILE=100
     lateinit var myCalendar:Calendar
+
+    //Firebase Variables
+    lateinit var auth:FirebaseAuth
+    lateinit var databaseReference:DatabaseReference
+    lateinit var storageReference:StorageReference
+    lateinit var selectedImageUri: Uri
+    lateinit var user:User
+
 
 
 
@@ -39,15 +56,15 @@ class EditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        var id=intent.getIntExtra("ID",0)
-        println(id)
+        user=intent.extras?.get("user") as User
+        println(user)
 
-        var dbHelper = this?.let { it1 -> DbHelper(it1.applicationContext) }
-        var db = dbHelper?.readableDatabase
-        var cursor=db?.rawQuery("SELECT * FROM Users where id=?", arrayOf("$id"))
-
-        cursor?.moveToFirst()
-        var user= cursor?.let { User(it.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8)) }
+//        var dbHelper = this?.let { it1 -> DbHelper(it1.applicationContext) }
+//        var db = dbHelper?.readableDatabase
+//        var cursor=db?.rawQuery("SELECT * FROM Users where id=?", arrayOf("$id"))
+//
+//        cursor?.moveToFirst()
+//        var user= cursor?.let { User(it.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8)) }
 
         findViewById<EditText>(R.id.editName).setText(user?.name)
         findViewById<EditText>(R.id.editMobileNo).setText(user?.mobile_no)
@@ -59,10 +76,18 @@ class EditActivity : AppCompatActivity() {
         else
             genderId=R.id.editFemale
         findViewById<RadioGroup>(R.id.editGender).check(genderId)
-        imagePath=user?.imagePath.toString()
+        imageUri=user?.imageUri.toString()
         latitude=user?.latitude.toString()
         longitude=user?.longitude.toString()
         findViewById<EditText>(R.id.editLocation).setText("Longitude:  $longitude\nLatitude: $latitude")
+        storageReference=FirebaseStorage.getInstance().getReference("Users/${user.id}")
+        val localFile=File.createTempFile("tempImage",".jpg")
+        storageReference.getFile(localFile).addOnSuccessListener {
+            val bitmap= BitmapFactory.decodeFile(localFile.absolutePath)
+            findViewById<ImageView>(R.id.editPickImage).setImageBitmap(bitmap)
+
+        }
+
 
 
         //Setting Date Picker
@@ -81,18 +106,19 @@ class EditActivity : AppCompatActivity() {
 
 
         //Fetch Image Button
-        var pickImage=findViewById<Button>(R.id.editPickImage)
+        var pickImage=findViewById<ImageView>(R.id.editPickImage)
         pickImage.setOnClickListener{
-            var intent= Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.setType("image/*")
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-            startActivityForResult(intent,1)
+            var intent = Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"),REQUEST_SINGLE_FILE);
+
         }
 
 
         //Fetch Location Button
         fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this)
-        findViewById<Button>(R.id.editFetchLocation).setOnClickListener{
+        findViewById<ImageView>(R.id.editFetchLocation).setOnClickListener{
             getLastLocation()
         }
 
@@ -106,21 +132,40 @@ class EditActivity : AppCompatActivity() {
         //Update Button
 
         findViewById<Button>(R.id.update).setOnClickListener{
-            db= dbHelper?.readableDatabase
-            var name=findViewById<EditText>(R.id.editName).text
-            var address=findViewById<EditText>(R.id.editAddress).text
+            var name=findViewById<EditText>(R.id.editName).text.toString()
+            var address=findViewById<EditText>(R.id.editAddress).text.toString()
             var gender:String
             if(findViewById<RadioGroup>(R.id.editGender).checkedRadioButtonId == R.id.editMale)
                 gender="male"
             else
                 gender="female"
-            var mobile_no=findViewById<EditText>(R.id.editMobileNo).text
-            var dob=findViewById<EditText>(R.id.editDob).text
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-            val formatted = current.format(formatter)
+            var mobile_no=findViewById<EditText>(R.id.editMobileNo).text.toString()
+            var dob=findViewById<EditText>(R.id.editDob).text.toString()
 
-            db?.execSQL("Update Users Set name='${name}',gender='$gender',address='$address',mobile_no='$mobile_no',dob='$dob',imagePath='$imagePath',longitude='$longitude',latitude='$latitude',modificationTime='$formatted' where id='$id'")
+            var tempUser=User(user.id,name,gender,address,mobile_no,dob,imageUri,longitude,latitude)
+
+            //Firebase code
+            auth= FirebaseAuth.getInstance()
+            databaseReference= FirebaseDatabase.getInstance().getReference().child("Users")
+            databaseReference.child(user.id).setValue(tempUser).addOnCompleteListener{
+                if (it.isSuccessful) {
+                    if(imageUri!=user.imageUri)
+                        uploadProfilePic()
+                } else {
+                    //hideProgressBar()
+                    Toast.makeText(
+                        this,
+                        "Some Error Occured",
+                        Toast.LENGTH_SHORT
+                    )
+                }
+            }
+
+
+
+
+
+
             Toast.makeText(this,"Data Updated Successfully",Toast.LENGTH_SHORT).show()
             var intent=Intent(this,MainActivity::class.java).apply {
                 intent.putExtra("fragment",2)
@@ -130,6 +175,19 @@ class EditActivity : AppCompatActivity() {
 
 
     }
+
+    private fun uploadProfilePic() {
+        storageReference= FirebaseStorage.getInstance().getReference("Users/"+user.id)
+        storageReference.putFile(selectedImageUri).addOnSuccessListener {
+            //hideProgressBar()
+            Toast.makeText(this,"Successfully Added",Toast.LENGTH_SHORT)
+        }.addOnFailureListener{
+            //hideProgressBar()
+            Toast.makeText(this,"Failed To Add",Toast.LENGTH_SHORT)
+        }
+    }
+
+
     private fun updateLabel(calendar: Calendar)
     {
         val myFormat="dd-MM-yyy"
@@ -140,12 +198,15 @@ class EditActivity : AppCompatActivity() {
     //Pick Image Fuctions
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode==1 && resultCode== RESULT_OK)
+        if(resultCode== RESULT_OK)
         {
-            var uri= data?.getData()
-            var file = File(uri?.getPath());//create path from uri
-            imagePath= file.getPath().split(":")[1]
+            if(requestCode==REQUEST_SINGLE_FILE)
+            {
+                selectedImageUri = data?.getData()!!;
+                imageUri=selectedImageUri.toString()
+            }
         }
+        findViewById<ImageView>(R.id.editPickImage).setImageURI(selectedImageUri)
     }
 
     //Fetch Location Functions

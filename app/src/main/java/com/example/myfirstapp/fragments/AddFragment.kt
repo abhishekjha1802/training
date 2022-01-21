@@ -5,45 +5,45 @@ import android.annotation.SuppressLint
 import android.app.Activity.LOCATION_SERVICE
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
-import android.content.ContentValues
+import android.app.Dialog
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.location.Location
 import android.location.LocationManager
-import android.location.LocationRequest
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import com.example.myfirstapp.DbHelper
 import com.example.myfirstapp.MainActivity
 import com.example.myfirstapp.R
+import com.example.myfirstapp.User
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest.create
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import java.io.File
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.Year
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 
 class AddFragment : Fragment() {
 
+    //Ui Variables----------------------------------->
     lateinit var name:String
     lateinit var mobile_no:String
     lateinit var address:String
@@ -51,13 +51,26 @@ class AddFragment : Fragment() {
     lateinit var dob :String
     lateinit var vw: View
     lateinit var myCalendar:Calendar
-    var imagePath:String=""
+    var imageUri:String=""
+
+    //location and Image variables------------------------------>
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     lateinit var locationRequest: com.google.android.gms.location.LocationRequest
     var latitude:String=""
     var longitude:String=""
     val PERMISSION_ID=1001
     val REQUEST_SINGLE_FILE=100
+    lateinit var selectedImageUri:Uri
+
+    //Firebase Variables----------------------------------------->
+    lateinit var auth:FirebaseAuth
+    lateinit var databaseReference: DatabaseReference
+    lateinit var storageReference:StorageReference
+    lateinit var user:User
+    lateinit var uid:String
+    lateinit var dialog: Dialog
+    var uniqueId:String=""
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -71,7 +84,8 @@ class AddFragment : Fragment() {
         loadState(vw)
 
 
-        //Setting Date Picker
+        selectedImageUri = Uri.parse("android.resource://com.example.myfirstapp/drawable/default_image")
+        //Setting Date Picker---------------------------------------->
         myCalendar=Calendar.getInstance()
         val datPicker=DatePickerDialog.OnDateSetListener{ datePicker: DatePicker, year: Int, month: Int, date_of_month: Int ->
             myCalendar.set(Calendar.YEAR,year)
@@ -84,8 +98,7 @@ class AddFragment : Fragment() {
         }
 
         //Pick Image Button----------------------------------------->
-
-        var pickImage=vw.findViewById<Button>(R.id.pickImage)
+        var pickImage=vw.findViewById<ImageView>(R.id.pickImage)
         pickImage.setOnClickListener{
             var intent = Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -98,17 +111,24 @@ class AddFragment : Fragment() {
 
         //Fetch Location Button-------------------------------------------->
         fusedLocationProviderClient=LocationServices.getFusedLocationProviderClient(requireActivity())
-        vw.findViewById<Button>(R.id.fetchLocation).setOnClickListener{
+        vw.findViewById<ImageView>(R.id.fetchLocation).setOnClickListener{
             getLastLocation()
         }
 
+
+        //Setting Firebas--------------------------------------------------->
+        auth= FirebaseAuth.getInstance()
+        uid=auth.currentUser?.uid.toString()
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")
+        val formatted = current.format(formatter)
+        uniqueId= uid+formatted
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("Users")
 
 
         //Submit Button------------------------------------------------------>
         var submit = vw.findViewById<Button>(R.id.submit)
         submit.setOnClickListener {
-            var dbHelper = context?.let { it1 -> DbHelper(it1.applicationContext) }
-            var db = dbHelper?.writableDatabase
 
             name = vw.findViewById<EditText>(R.id.name).text.toString()
             mobile_no = vw.findViewById<EditText>(R.id.mobile_no).text.toString()
@@ -119,24 +139,38 @@ class AddFragment : Fragment() {
             else
                 gender = "female"
             dob = vw.findViewById<EditText>(R.id.dob).text.toString()
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-            val formatted = current.format(formatter)
 
-            var cv = ContentValues()
-            cv.put("name", name)
-            cv.put("gender", gender)
-            cv.put("address", address)
-            cv.put("dob", dob)
-            cv.put("mobile_no", mobile_no)
-            cv.put("imagePath",imagePath)
-            cv.put("longitude",longitude)
-            cv.put("latitude",latitude)
-            cv.put("insertionTime",formatted)
-            cv.put("modificationTime",formatted)
-            db?.insert("Users", null, cv)
+            user=User(
+                uniqueId,
+                name,
+                gender,
+                address,
+                mobile_no,
+                dob,
+                imageUri,
+                longitude,
+                latitude
+            )
 
+            //Firebase Code------------------------------------------------------>
+            showProgressBar()
 
+            if(uid!=null) {
+                databaseReference.child(uniqueId).setValue(user)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            uploadProfilePic()
+                        } else {
+                            hideProgressBar()
+                            Toast.makeText(
+                                requireContext(),
+                                "Some Error Occured",
+                                Toast.LENGTH_SHORT
+                            )
+                        }
+                    }
+            }
+            //-------------------------------------------------------------------->
 
             reset(vw)
             saveState(vw)
@@ -151,11 +185,6 @@ class AddFragment : Fragment() {
             var intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
         }
-
-
-
-
-
         return vw
     }
 
@@ -166,6 +195,31 @@ class AddFragment : Fragment() {
         vw.findViewById<EditText>(R.id.dob).setText(sdf.format(myCalendar.time))
     }
 
+
+    //Firebase Functions------------------------------------------------------------------------------->
+    private fun uploadProfilePic() {
+        storageReference= FirebaseStorage.getInstance().getReference("Users/"+uniqueId)
+        storageReference.putFile(selectedImageUri).addOnSuccessListener {
+            hideProgressBar()
+            Toast.makeText(requireContext(),"Successfully Added",Toast.LENGTH_SHORT)
+        }.addOnFailureListener{
+            hideProgressBar()
+            Toast.makeText(requireContext(),"Failed To Add",Toast.LENGTH_SHORT)
+        }
+    }
+
+    private fun showProgressBar(){
+        dialog= Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_wait)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.show()
+    }
+
+    private fun hideProgressBar(){
+        dialog.dismiss()
+    }
+
     //Submit Button Functions-------------------------------------------------------->
     private fun reset(view:View) {
         view.findViewById<EditText>(R.id.name).text.clear()
@@ -173,7 +227,7 @@ class AddFragment : Fragment() {
         view.findViewById<EditText>(R.id.address).text.clear()
         view.findViewById<RadioGroup>(R.id.gender).check(R.id.male)
         view.findViewById<EditText>(R.id.dob).text.clear()
-        imagePath=""
+        imageUri=""
         longitude=""
         latitude=""
     }
@@ -185,7 +239,7 @@ class AddFragment : Fragment() {
         view.findViewById<EditText>(R.id.address).setText(sharedPreferences?.getString("address",null))
         view.findViewById<EditText>(R.id.dob).setText(sharedPreferences?.getString("dob",null))
         view.findViewById<EditText>(R.id.mobile_no).setText(sharedPreferences?.getString("mobile_no",null))
-        imagePath= sharedPreferences?.getString("imagePath",null).toString()
+        imageUri= sharedPreferences?.getString("imagePath",null).toString()
         var radioButtonId=sharedPreferences?.getInt("genderId",0)
         if(radioButtonId==0)
             view.findViewById<RadioGroup>(R.id.gender).check(R.id.male)
@@ -215,7 +269,7 @@ class AddFragment : Fragment() {
         editable?.putString("mobile_no",mobile_no)
         editable?.putString("address",address)
         editable?.putString("dob",dob)
-        editable?.putString("imagePath",imagePath)
+        editable?.putString("imagePath",imageUri)
         if(id==R.id.male){
             editable?.putInt("genderId",R.id.male)
         }
@@ -235,31 +289,11 @@ class AddFragment : Fragment() {
         {
             if(requestCode==REQUEST_SINGLE_FILE)
             {
-                var selectedImageUri = data?.getData();
-                val path=getPathFromURI(selectedImageUri)
-
-
-                if(path!=null){
-                    var file=File(path)
-                    selectedImageUri= Uri.fromFile(file)
-                }
-                println(selectedImageUri)
-                println(path)
+                selectedImageUri = data?.getData()!!;
+                imageUri=selectedImageUri.toString()
             }
         }
-    }
-    fun getPathFromURI(contentUri:Uri?): String? {
-        var res: String?= null
-        var proj = arrayOf( MediaStore.Images.Media.DATA)
-        var cursor = requireActivity().applicationContext.getContentResolver()?.query(contentUri!!, proj, null, null, null)
-
-        if (cursor?.moveToFirst() == true) {
-
-            var column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor?.getString(column_index)
-        }
-        cursor?.close();
-        return res;
+        vw.findViewById<ImageView>(R.id.pickImage).setImageURI(selectedImageUri)
     }
 
     //Functions for Location------------------------------------------------>
