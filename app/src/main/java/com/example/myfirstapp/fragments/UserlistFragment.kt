@@ -1,7 +1,6 @@
 package com.example.myfirstapp.fragments
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,20 +15,8 @@ import com.example.myfirstapp.DbHelper
 import com.example.myfirstapp.EditActivity
 import com.example.myfirstapp.R
 import com.example.myfirstapp.User
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.google.firebase.storage.StorageReference
 
 class UserlistFragment : Fragment() {
-
-    lateinit var v:View
-    lateinit var auth:FirebaseAuth
-    lateinit var dialog: Dialog
-    lateinit var databaseReference: DatabaseReference
-    lateinit var storageReference: StorageReference
-    lateinit var uid:String
-    var maxId=1
-    lateinit var userArray:ArrayList<User>
 
     override fun onCreateView(
 
@@ -38,63 +25,46 @@ class UserlistFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        v=inflater.inflate(R.layout.fragment_userlist,container,false)
+        var v=inflater.inflate(R.layout.fragment_userlist,container,false)
         super.onCreateView(inflater, container, savedInstanceState)
+        var dbHelper = context?.let { it1 -> DbHelper(it1.applicationContext) }
+        var db = dbHelper?.readableDatabase
+        var cursor=db?.query("Users",null,null,null,null,null,"modificationTime DESC")
+        var count: Int? =cursor?.count
 
-        //Firebase Code----------------------------------------------------->
-        auth= FirebaseAuth.getInstance()
-        uid= auth.currentUser.toString()
-        userArray= ArrayList()
+        var userArray=ArrayList<User>()
 
-        databaseReference=FirebaseDatabase.getInstance().getReference().child("Users")
-        if(uid.isNotEmpty())
+
+
+
+        while (cursor?.moveToNext() == true)
         {
-            getUsersData()
+            var user=User(cursor.getInt(0),cursor.getString(1),"","","","",cursor.getString(6),"","")
+            userArray.add(user)
         }
 
 
+        var listview:ListView=v.findViewById<ListView>(R.id.list_view)
+        listview.adapter=MyAdapter(requireActivity(),userArray)
 
+
+        listview.onItemClickListener= object :AdapterView.OnItemClickListener{
+            override fun onItemClick(
+                p0: AdapterView<*>?,
+                p1: View?,
+                p2: Int,
+                p3: Long
+            ) {
+                println(userArray[p2].name)
+                var intent=Intent(requireContext(),EditActivity::class.java).apply{
+                    putExtra("ID",userArray[p2].id)
+                }
+                startActivity(intent)
+
+            }
+        }
 
         return v
-    }
-
-    private fun getUsersData() {
-
-       databaseReference.addValueEventListener(object :ValueEventListener{
-           override fun onDataChange(snapshot: DataSnapshot) {
-               for(data in snapshot.children){
-                    var model=data.getValue(User::class.java)
-                    userArray.add(model as User)
-
-               }
-
-               var listview:ListView=v.findViewById<ListView>(R.id.list_view)
-               listview.adapter=MyAdapter(requireActivity(),userArray)
-
-
-               listview.onItemClickListener= object :AdapterView.OnItemClickListener{
-                   override fun onItemClick(
-                       p0: AdapterView<*>?,
-                       p1: View?,
-                       p2: Int,
-                       p3: Long
-                   ) {
-                       println(userArray[p2].name)
-                       var intent=Intent(requireContext(),EditActivity::class.java).apply{
-                           putExtra("user",userArray[p2])
-                       }
-                       startActivity(intent)
-
-                   }
-               }
-
-           }
-
-           override fun onCancelled(error: DatabaseError) {
-               TODO("Not yet implemented")
-           }
-
-       })
     }
 
 
