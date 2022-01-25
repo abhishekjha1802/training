@@ -26,6 +26,43 @@
             android:gravity="center"
             android:textSize="80dp"
             android:text="0"/>
+        <Button
+            android:id="@+id/webViewButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="WebView"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crash 1"
+            android:id="@+id/crash1"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/purple_500"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="16dp"
+            app:rippleColor="#33AAAAAA"
+            app:strokeColor="@color/purple_500"
+            app:strokeWidth="2dp"
+            android:layout_gravity="bottom"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crash 2"
+            android:id="@+id/crash2"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/purple_500"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="16dp"
+            app:rippleColor="#33AAAAAA"
+            app:strokeColor="@color/purple_500"
+            app:strokeWidth="2dp"
+            android:layout_gravity="bottom"/>
     </LinearLayout>
     <Button
         android:layout_width="match_parent"
@@ -44,4 +81,5 @@
         app:strokeWidth="2dp"
         android:layout_gravity="bottom"
         />
+
 </FrameLayout>

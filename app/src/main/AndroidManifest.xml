@@ -20,6 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApp">
         <activity
+            android:name=".MyWebView"
+            android:exported="false" />
+        <activity
+            android:name=".WebView"
+            android:exported="false" />
+        <activity
             android:name=".FacebookAuth"
             android:exported="false" />
         <activity

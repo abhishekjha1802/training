@@ -9,15 +9,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.myfirstapp.DbHelper
+import com.example.myfirstapp.MyWebView
 import com.example.myfirstapp.R
 import com.example.myfirstapp.SignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.lang.RuntimeException
 
 
 class HomeFragment : Fragment() {
     lateinit var databaseReference:DatabaseReference
-
 
     private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreateView(
@@ -31,7 +32,6 @@ class HomeFragment : Fragment() {
 
         firebaseAuth= FirebaseAuth.getInstance()
         checkUser()
-
 
         v.findViewById<TextView>(R.id.entriesCount).text="0"
         databaseReference=FirebaseDatabase.getInstance().getReference("Users")
@@ -47,6 +47,18 @@ class HomeFragment : Fragment() {
 
            }
         })
+
+        v.findViewById<Button>(R.id.webViewButton).setOnClickListener{
+            startActivity(Intent(requireContext(),MyWebView::class.java))
+        }
+
+        v.findViewById<Button>(R.id.crash1).setOnClickListener{
+            throw RuntimeException("Crash Test")
+        }
+
+        v.findViewById<Button>(R.id.crash2).setOnClickListener{
+            var x=20/0
+        }
 
 
         v.findViewById<Button>(R.id.logout).setOnClickListener{
