@@ -13,12 +13,17 @@ import com.example.myfirstapp.MyWebView
 import com.example.myfirstapp.R
 import com.example.myfirstapp.SignIn
 import com.google.firebase.auth.FirebaseAuth
+
 import com.google.firebase.database.*
 import java.lang.RuntimeException
 
 
 class HomeFragment : Fragment() {
     lateinit var databaseReference:DatabaseReference
+
+
+
+class HomeFragment : Fragment() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreateView(
@@ -29,9 +34,14 @@ class HomeFragment : Fragment() {
 
         var v=inflater.inflate(R.layout.fragment_home,container,false)
         super.onCreateView(inflater, container, savedInstanceState)
+        var dbHelper = context?.let { it1 -> DbHelper(it1.applicationContext) }
+        var db = dbHelper?.readableDatabase
+        var cursor=db?.query("Users",null,null,null,null,null,null)
+        var count=cursor?.count
 
         firebaseAuth= FirebaseAuth.getInstance()
         checkUser()
+
 
         v.findViewById<TextView>(R.id.entriesCount).text="0"
         databaseReference=FirebaseDatabase.getInstance().getReference("Users")
@@ -47,6 +57,9 @@ class HomeFragment : Fragment() {
 
            }
         })
+
+        v.findViewById<TextView>(R.id.entriesCount).text=count.toString()
+
 
         v.findViewById<Button>(R.id.webViewButton).setOnClickListener{
             startActivity(Intent(requireContext(),MyWebView::class.java))
