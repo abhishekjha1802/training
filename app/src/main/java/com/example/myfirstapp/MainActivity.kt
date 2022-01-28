@@ -2,7 +2,10 @@ package com.example.myfirstapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.appcompat.widget.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -32,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var fragmentId=intent.getIntExtra("fragment",1)
 
         toolbar=findViewById(R.id.myToolbar)
         setSupportActionBar(toolbar)
@@ -45,7 +47,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration= AppBarConfiguration(setOf(R.id.id_home_fragment,R.id.id_userlist_fragment,R.id.id_add_fragment),drawerLayout)
         setupActionBarWithNavController(navController,drawerLayout)
 
-
+        println(R.id.id_home_fragment)
+        println(R.id.fragmentContainerView)
         navigationView.setupWithNavController(navController)
         bottomNavigationView.setupWithNavController(navController)
 
@@ -56,5 +59,20 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) ||super.onSupportNavigateUp()
     }
 
+    var doubleBackToExitPressedOnce = false
+    override fun onBackPressed() {
+        if (navController.currentDestination!!.id == navController.graph.startDestination) {
+            if (doubleBackToExitPressedOnce)
+                super.onBackPressed()
+            else
+                onHandlerStart()
+        }else
+            super.onBackPressed()
+    }
+    private fun onHandlerStart() {
+        doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
+    }
 
 }
