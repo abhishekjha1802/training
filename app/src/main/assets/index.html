@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <body>
-<p style="font-size:20pt;">This is web view</p>
-<input id="inputField"
-       style="height:50px;width:300px;font-size:20pt;"
-       type="text"
-       value="">
+<p style="font-size:30pt;" align="center">WEB VIEW</p>
+
 <br><br>
-<input onClick="sendMessage()"
-       style="height:50px;width:300px;font-size:20pt;"
+<input
+       id="myButton" onClick="sendMessage()"
+       style="height:50px;width:370px;font-size:20pt;"
+       align="center"
        type="button"
-       value="Send data to native"/>
+       value="Device Information"/>
 
 <script type="text/javascript">
     function sendMessage() {
-		var valueReceived =  document.getElementById("inputField").value;
-        JSBridge.showMessageInNative(valueReceived);
+        JSBridge.sendRequest();
     }
-    function updateFromNative(message){
-		document.getElementById("inputField").value = message;
+    function getResult(brand,model,id,sdk,man,user,type,base,versionControl){
+
+		alert(brand+"\n"+model+"\n"+id+"\n"+sdk+"\n"+man+"\n"+user+"\n"+type+"\n"+base+"\n"+versionControl)
     }
 </script>
 <style>
 	body {
-	background-color: #93B874
+	background-color: #FC8694
 	}
 </style>
 </body>
