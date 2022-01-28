@@ -90,5 +90,15 @@ class MyWebView : AppCompatActivity() {
         base="Base: ${Build.VERSION_CODES.BASE} "
         versionCode="Version Code: ${Build.VERSION.RELEASE}"
     }
+
+
+    override fun onBackPressed() {
+        if (myWebView.canGoBack()) {
+            myWebView.goBack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
 }
 

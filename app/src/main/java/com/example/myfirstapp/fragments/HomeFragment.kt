@@ -32,7 +32,6 @@ class HomeFragment : Fragment() {
 
         firebaseAuth= FirebaseAuth.getInstance()
         checkUser()
-
         v.findViewById<TextView>(R.id.entriesCount).text="0"
         databaseReference=FirebaseDatabase.getInstance().getReference("Users")
         databaseReference.addValueEventListener(object : ValueEventListener {
