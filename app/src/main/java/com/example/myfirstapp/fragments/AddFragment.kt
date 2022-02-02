@@ -104,7 +104,6 @@ class AddFragment : Fragment() {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("image/*");
             startActivityForResult(Intent.createChooser(intent, "Select Picture"),REQUEST_SINGLE_FILE);
-
         }
 
 
@@ -331,20 +330,18 @@ class AddFragment : Fragment() {
 
     private fun getLastLocation(){
         if(checkPermission()){
-            println("Permission is given")
+
             if(isLocationEnabled()){
-                println("location is enabled")
+
 
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener{
                     var location=it.result
                     if(location==null)
                     {
-                        println("Requesting new location")
                         newLoction()
                     }
                     else
                     {
-                        println("Assigning Loaction")
                         longitude=location.longitude.toString()
                         latitude=location.latitude.toString()
                         vw.findViewById<EditText>(R.id.location).setText("Longitude:  $longitude\nLatitude:  $latitude")
@@ -368,16 +365,13 @@ class AddFragment : Fragment() {
 
         locationRequest=create().setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setInterval(0).setFastestInterval(0).setNumUpdates(2)
-        println("Location Request Set")
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,locationCallback,Looper.myLooper()
         )
-        println("New Location assigned")
     }
 
     private var locationCallback= object:LocationCallback(){
         override fun onLocationResult(p0: LocationResult) {
-            println("Under Location Callback")
             var lastlocation: Location =p0.lastLocation
             longitude=lastlocation.longitude.toString()
             latitude=lastlocation.latitude.toString()

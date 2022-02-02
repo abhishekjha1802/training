@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en-US" xmlns:true="http://www.w3.org/1999/xhtml">
 <body>
 <p style="font-size:30pt;" align="center">WEB VIEW</p>
 
@@ -10,26 +10,67 @@
        align="center"
        type="button"
        value="Device Information"/>
-<a style="font-size:30pt;" align="center" href="file:///android_asset/page2.html" >
-    <input
+
+    <input onclick="page2()"
         style="height:50px;width:370px;font-size:20pt;"
         align="center"
         type="button"
-        value="Next Page"/>
-</a>
+        value="Next Page"
 
+    />
+
+<div>
+    <div id="signInDiv"  align="center">
+        <img id="signIn" onClick="signIn()" src="signin.png" class="center">
+    </div>
+</div>
 <script type="text/javascript">
+    var user="";
+    function checkUser(){
+        if(user=="")
+            return false;
+        else
+            return true;
+    }
     function sendMessage() {
-        JSBridge.sendRequest();
+        if(checkUser())
+            JSBridge.sendRequest();
+        else
+        {
+            alert("Please Login")
+        }
     }
     function getResult(brand,model,id,sdk,man,user,type,base,versionControl){
 
 		alert(brand+"\n"+model+"\n"+id+"\n"+sdk+"\n"+man+"\n"+user+"\n"+type+"\n"+base+"\n"+versionControl)
     }
+    function signIn(){
+        JSBridge.signIn();
+    }
+    function signInResult(userName){
+        user=userName
+        document.getElementById("signInDiv").innerHTML= userName;
+    }
+
+
+    function page2(){
+        if(checkUser())
+           window.location.href="page2.html"
+        else
+        {
+            alert("Please Login")
+        }
+    }
 </script>
 <style>
+    .center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
 	body {
-	background-color: #FC8694
+	    background-color: #FC8694
 	}
 </style>
 </body>

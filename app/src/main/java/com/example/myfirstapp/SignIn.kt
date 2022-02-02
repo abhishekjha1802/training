@@ -73,13 +73,13 @@ open class SignIn : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-       // println("\n\nbkjhoijpokjpo;jolkugvfchtdxgrhjv\n\n")
+
         if(requestCode== RC_SIGN_IN){
-            //println("\n\nbkjhoijpokjpo;jolkugvfchtdxgrhjv\n\n")
+
             val accountTask=GoogleSignIn.getSignedInAccountFromIntent(data)
-            println("\n\nbkjhoijpokjpo;jolkugvfchtdxgrhjv\n\n")
+
             val account=accountTask.getResult(ApiException::class.java)
-            println("\n\nbkjhoijpokjpo;jolkugvfchtdxgrhjv\n\n")
+
             firebaseAuthWithGoogleAccount(account)
         }
     }
